@@ -3,7 +3,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  uuid: { type: String, default: "testuuid" },
+  uuid: String,
   email: String,
   password: String,
   accountCreationDate: { type: Date, default: Date.now },
