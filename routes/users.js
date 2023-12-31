@@ -24,8 +24,13 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ status: "failure",message: 'User not found' });
     }
 
+    const userObject = user.toObject();
 
-    res.status(200).json({ status: "success", message: 'Logged in successfully'});
+    // Delete the password property
+    delete userObject.password;
+
+
+    res.status(200).json({ status: "success", message: 'Logged in successfully',  data: userObject});
   } catch (err) {
     console.error(err);
     res.status(500).json({ status: "error",message: 'Server error' });
