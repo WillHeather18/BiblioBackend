@@ -4,11 +4,21 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
+const mongoose  = require('mongoose');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+
+// MongoDB connection
+const uri = "mongodb+srv://HEv_18:B0bsnowy66!@bibliobox.eiqrhme.mongodb.net/user_details";
+mongoose.connect(uri);
+
+const connection = mongoose.connection;
+connection.once('open', () => {
+  console.log("MongoDB database connection established successfully");
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
