@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var { v4: uuidv4 } = require('uuid');
-const argon2 = require('argon2');
+const bcrypt = require('bcryptjs');
 
 
 const userSchema = new mongoose.Schema({
@@ -27,7 +27,7 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ status: "failure",message: 'User not found' });
     }
 
-    const isMatch = await argon2.verify(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
           return res.status(400).json({ status: "failure", message: 'Invalid password' });
@@ -64,7 +64,7 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({ status: "failure", message: 'User already exists' });
     }
 
-    const hashedPassword = await argon2.hash(password);
+    const hashedPassword = await bycrypt.hash(password, 10);
 
     const user = new User({ email, password: hashedPassword});
     await user.save();
