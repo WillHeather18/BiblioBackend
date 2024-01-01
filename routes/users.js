@@ -64,7 +64,7 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({ status: "failure", message: 'User already exists' });
     }
 
-    const hashedPassword = await bycrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({ email, password: hashedPassword});
     await user.save();
