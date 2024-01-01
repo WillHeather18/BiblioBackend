@@ -2,9 +2,10 @@ const e = require('express');
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
 const recommendationSchema = new mongoose.Schema({
-    uuid: String,
+    uuid: { type: String, default: uuidv4() },
     recommendations: [String],
 });
 

@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
+var { v4: uuidv4 } = require('uuid');
 
 const userSchema = new mongoose.Schema({
-  uuid: String,
+  uuid: { type: String, default: uuidv4() },
   email: String,
   password: String,
   accountCreationDate: { type: Date, default: Date.now },
