@@ -3,6 +3,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
 
 
 const userSchema = new mongoose.Schema({
@@ -18,7 +19,6 @@ const User = mongoose.model('User', userSchema);
 /* GET users listing. */
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
-  console.log(email);
 
   try {
     const user = await User.findOne({ email });
@@ -38,8 +38,9 @@ router.post('/login', async (req, res) => {
     // Delete the password property
     delete userObject.password;
 
+    const token = jwt.sign({ id: user._id }, 'hello', { expiresIn: '1h' });
 
-    res.status(200).json({ status: "success", message: 'Logged in successfully',  data: userObject});
+    res.status(200).json({ status: "success", message: 'Logged in successfully',  data: userObject, token: token});
   } catch (err) {
     console.error(err);
     res.status(500).json({ status: "error",message: 'Server error' });

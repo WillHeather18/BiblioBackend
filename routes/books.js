@@ -4,7 +4,26 @@ var router = express.Router();
 var mongoose = require('mongoose');
 const { v4: uuidv4 } = require('uuid');
 const { spawn } = require('child_process');
+var jwt = require('jsonwebtoken');
 
+// JWT Validation Middleware
+function validateJwt(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+  
+    if (token == null) {
+      return res.sendStatus(401); // if there's no token
+    }
+  
+    jwt.verify(token, 'hello', (err, user) => {
+      if (err) {
+        return res.sendStatus(403); // if the token is invalid or expired
+      }
+  
+      req.user = user;
+      next(); // proceed to the next middleware/route handler
+    });
+  }
 
 const recommendationSchema = new mongoose.Schema({
     uuid: { type: String, default: uuidv4() },
@@ -19,8 +38,9 @@ const userRatingsSchema = new mongoose.Schema({
 const Recommendations = mongoose.model('recommendations', recommendationSchema);
 const UserRatings = mongoose.model('user_ratings', userRatingsSchema);
 
-router.get('/getrecommendations/:uuid', async (req, res) => {
+router.get('/getrecommendations/:uuid', validateJwt, async (req, res) => {
     try {
+
         const uuid = req.params.uuid;
         const recommendations = await Recommendations.find({ uuid: uuid });
   
@@ -35,7 +55,7 @@ router.get('/getrecommendations/:uuid', async (req, res) => {
     }
   });
 
-  router.post('/updaterecommendations', async (req, res) => {
+  router.post('/updaterecommendations', validateJwt, async (req, res) => {
     const uuid = req.body.uuid;
 
     try{
