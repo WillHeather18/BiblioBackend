@@ -15,7 +15,7 @@ function validateJwt(req, res, next) {
       return res.sendStatus(401); // if there's no token
     }
   
-    jwt.verify(token, 'hello', (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
       if (err) {
         return res.sendStatus(403); // if the token is invalid or expired
       }

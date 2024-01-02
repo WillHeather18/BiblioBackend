@@ -38,7 +38,7 @@ router.post('/login', async (req, res) => {
     // Delete the password property
     delete userObject.password;
 
-    const token = jwt.sign({ id: user._id }, 'hello', { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
 
     res.status(200).json({ status: "success", message: 'Logged in successfully',  data: userObject, token: token});
   } catch (err) {
