@@ -25,19 +25,6 @@ function validateJwt(req, res, next) {
     });
   }
 
-const recommendationSchema = new mongoose.Schema({
-    uuid: { type: String, default: uuidv4() },
-    recommendations: [String],
-});
-
-const userRatingsSchema = new mongoose.Schema({
-    uuid: { type: String, default: uuidv4() },
-    ratings: {},
-});
-
-const Recommendations = mongoose.model('recommendations', recommendationSchema);
-const UserRatings = mongoose.model('user_ratings', userRatingsSchema);
-
 router.get('/getrecommendations/:uuid', validateJwt, async (req, res) => {
     try {
 

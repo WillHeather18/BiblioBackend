@@ -10,18 +10,19 @@ const userSchema = new mongoose.Schema({
   uuid: { type: String },
   email: String,
   password: String,
+  subscription: { type: String, default: 'none' },
   accountCreationDate: { type: Date, default: Date.now },
   lastLoginDate: { type: Date, default: Date.now },
 });
 
 const recommendationSchema = new mongoose.Schema({
-  uuid: { type: String, default: uuidv4() },
+  uuid: { type: String },
   recommendations: [String],
 });
 
 const userRatingsSchema = new mongoose.Schema({
-  uuid: { type: String, default: uuidv4() },
-  ratings: {},
+  uuid: { type: String },
+  ratings: [String],
 });
 
 const User = mongoose.model('User', userSchema);
@@ -63,7 +64,7 @@ router.post('/login', async (req, res) => {
 router.post('/signup', async (req, res) => {
   const { email, password } = req.body;
 
-  const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   if (!emailRegex.test(email)) {
       return res.status(400).json({ status: "failure", message: 'Invalid email format' });
@@ -96,5 +97,20 @@ router.post('/signup', async (req, res) => {
     res.status(500).json({ status: "error", message: 'Server error' });
   }
 });
+
+router.post('/deleteuser', async (req, res) => {
+  const { uuid } = req.body;
+
+  try {
+    await UserRatings.deleteOne({ uuid });
+    await Recommendations.deleteOne({ uuid });
+    await User.deleteOne({ uuid });
+    res.status(200).json({ status: "success", message: 'User records deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ status: "error", message: 'Server error' });
+  }
+});
+
 
 module.exports = router;
