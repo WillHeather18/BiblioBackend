@@ -7,14 +7,26 @@ var jwt = require('jsonwebtoken');
 
 
 const userSchema = new mongoose.Schema({
-  uuid: { type: String, default: uuidv4() },
+  uuid: { type: String },
   email: String,
   password: String,
   accountCreationDate: { type: Date, default: Date.now },
   lastLoginDate: { type: Date, default: Date.now },
 });
 
+const recommendationSchema = new mongoose.Schema({
+  uuid: { type: String, default: uuidv4() },
+  recommendations: [String],
+});
+
+const userRatingsSchema = new mongoose.Schema({
+  uuid: { type: String, default: uuidv4() },
+  ratings: {},
+});
+
 const User = mongoose.model('User', userSchema);
+const Recommendations = mongoose.model('recommendations', recommendationSchema);
+const UserRatings = mongoose.model('user_ratings', userRatingsSchema);
 
 /* GET users listing. */
 router.post('/login', async (req, res) => {
@@ -67,8 +79,16 @@ router.post('/signup', async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = new User({ email, password: hashedPassword});
+    const uuid = uuidv4();
+
+    const user = new User({ uuid, email, password: hashedPassword});
     await user.save();
+
+    const recommendations = new Recommendations({ uuid, recommendations: []});
+    await recommendations.save();
+
+    const userRatings = new UserRatings({ uuid, ratings: {}});
+    await userRatings.save();
 
     res.status(200).json({ status: "success", message: 'User created successfully', data: user });
   } catch (err) {
