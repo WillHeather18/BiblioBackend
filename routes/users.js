@@ -4,31 +4,7 @@ var mongoose = require('mongoose');
 var { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
-
-
-const userSchema = new mongoose.Schema({
-  uuid: { type: String },
-  email: String,
-  password: String,
-  subscription: { type: String, default: 'none' },
-  accountCreationDate: { type: Date, default: Date.now },
-  lastLoginDate: { type: Date, default: Date.now },
-});
-
-const recommendationSchema = new mongoose.Schema({
-  uuid: { type: String },
-  recommendations: [String],
-});
-
-const userRatingsSchema = new mongoose.Schema({
-  uuid: { type: String },
-  ratings: [String],
-});
-
-const User = mongoose.model('User', userSchema);
-const Recommendations = mongoose.model('recommendations', recommendationSchema);
-const UserRatings = mongoose.model('user_ratings', userRatingsSchema);
-
+const { User, Recommendations, UserRatings } = require('../models.js');
 /* GET users listing. */
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
@@ -105,6 +81,7 @@ router.post('/deleteuser', async (req, res) => {
     await UserRatings.deleteOne({ uuid });
     await Recommendations.deleteOne({ uuid });
     await User.deleteOne({ uuid });
+    
     res.status(200).json({ status: "success", message: 'User records deleted successfully' });
   } catch (err) {
     console.error(err);

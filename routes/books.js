@@ -1,10 +1,10 @@
-const e = require('express');
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 const { v4: uuidv4 } = require('uuid');
 const { spawn } = require('child_process');
 var jwt = require('jsonwebtoken');
+const { Recommendations, UserRatings } = require('../models.js');
 
 // JWT Validation Middleware
 function validateJwt(req, res, next) {
