@@ -61,7 +61,7 @@ router.get('/getrecommendations/:uuid', validateJwt, async (req, res) => {
         const ratingsJson = JSON.stringify(ratingsObject);
 
         // Run Python script
-        const python = spawn('python', ['ML/Hybrid.py', ratingsJson, '5']);
+        const python = spawn('python', ['ML/Hybrid.py', ratingsJson, '30']);
 
         let scriptOutput = "";
         python.stdout.on('data', (data) => {

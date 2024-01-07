@@ -13,6 +13,7 @@ exports.User = User;
 
 const recommendationSchema = new mongoose.Schema({
     uuid: { type: String },
+    index: { type: Number, default: 5 },
     recommendations: [String],
   });
 const Recommendations = mongoose.model('recommendations', recommendationSchema);
